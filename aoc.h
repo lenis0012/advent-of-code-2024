@@ -2,6 +2,11 @@
 // Created by lennart on 12/2/24.
 //
 
+/*
+ * Basic AOC Helper functions
+ * for parsing inputs
+ */
+
 #pragma once
 
 #include <stdio.h>
