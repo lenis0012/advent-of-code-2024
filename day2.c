@@ -31,21 +31,15 @@ struct Array parse_line(char *line) {
     return array;
 }
 
-struct Array copy_levels_without(struct Array original, int index) {
-    struct Array array = {
-        .values = calloc(1024, sizeof(int)),
-        .length = original.length - 1
-    };
+int is_increasing(struct Array levels, int exclude) {
+    int last = levels.values[0], start = 1;
+    if (exclude == 0) {
+        last = levels.values[1];
+        start += 1;
+    }
 
-    memcpy(array.values, original.values, index * sizeof(int));
-    memcpy(&array.values[index], &original.values[index + 1], (original.length - index - 1) * sizeof(int));
-    return array;
-}
-
-int is_increasing(struct Array levels) {
-    int last = levels.values[0];
-
-    for (int i = 1; i < levels.length; i++) {
+    for (int i = start; i < levels.length; i++) {
+        if (i == exclude) continue;
         if (last >= levels.values[i]) {
             return i;
         }
@@ -55,10 +49,15 @@ int is_increasing(struct Array levels) {
     return 0;
 }
 
-int is_decreasing(struct Array levels) {
-    int last = levels.values[0];
+int is_decreasing(struct Array levels, int exclude) {
+    int last = levels.values[0], start = 1;
+    if (exclude == 0) {
+        last = levels.values[1];
+        start += 1;
+    }
 
-    for (int i = 1; i < levels.length; i++) {
+    for (int i = start; i < levels.length; i++) {
+        if (i == exclude) continue;
         if (last <= levels.values[i]) {
             return i;
         }
@@ -68,10 +67,15 @@ int is_decreasing(struct Array levels) {
     return 0;
 }
 
-int is_similar(struct Array levels) {
-    int last = levels.values[0];
+int is_similar(struct Array levels, int exclude) {
+    int last = levels.values[0], start = 1;
+    if (exclude == 0) {
+        last = levels.values[1];
+        start += 1;
+    }
 
-    for (int i = 1; i < levels.length; i++) {
+    for (int i = start; i < levels.length; i++) {
+        if (i == exclude) continue;
         int distance = abs(last - levels.values[i]);
         if (distance == 0 || distance > 3) {
             return i;
@@ -82,8 +86,8 @@ int is_similar(struct Array levels) {
     return 0;
 }
 
-bool levels_valid(struct Array levels) {
-    return is_similar(levels) == 0 && (is_increasing(levels) == 0 || is_decreasing(levels) == 0);
+bool is_safe(struct Array levels, int exclude) {
+    return (is_increasing(levels, exclude) == 0 || is_decreasing(levels, exclude) == 0) && is_similar(levels, exclude) == 0;
 }
 
 void run_day2() {
@@ -95,16 +99,16 @@ void run_day2() {
     while (input != NULL) {
         struct Array levels = parse_line(input);
 
-        bool valid = levels_valid(levels);
-        result1 += valid ? 1 : 0;
-
-        if (
-            valid
-            || levels_valid(copy_levels_without(levels, is_increasing(levels)))
-            || levels_valid(copy_levels_without(levels, is_decreasing(levels)))
-            || levels_valid(copy_levels_without(levels, is_similar(levels)))
-        ) {
-            result2 += 1;
+        if (is_safe(levels, -1)) {
+            result1++;
+            result2++;
+        } else {
+            int fIncreasing = is_increasing(levels, -1);
+            int fDecreasing = is_decreasing(levels, -1);
+            int fSimilar = is_similar(levels, -1);
+            if (is_safe(levels, fIncreasing) || is_safe(levels, fDecreasing) || is_safe(levels, fSimilar)) {
+                result2++;
+            }
         }
 
         // go to next line
