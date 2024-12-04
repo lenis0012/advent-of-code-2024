@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char* aoc_read_file(FILE *f) {
+static char* aoc_read_file(FILE *f) {
     if (f == NULL) {
         fprintf(stderr, "Couln't find input file\n");
         exit(EXIT_FAILURE);
@@ -25,6 +25,7 @@ char* aoc_read_file(FILE *f) {
 
     char *data = malloc(fsize + 1);
     fread(data, sizeof(char), fsize, f);
+    data[fsize] = '\0';
 
     return data;
 }
