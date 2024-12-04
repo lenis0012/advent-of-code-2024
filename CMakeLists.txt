@@ -7,6 +7,7 @@ add_executable(aoc_2024_c day1.c
         main.c
         day2.c
         day3.c
+        day4.c
         aoc.h)
 
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)

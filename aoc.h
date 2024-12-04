@@ -29,3 +29,14 @@ static char* aoc_read_file(FILE *f) {
 
     return data;
 }
+
+static unsigned int aoc_file_size(FILE *f) {
+    fpos_t pos;
+    fgetpos(f, &pos);
+
+    fseek(f, 0, SEEK_END);
+    size_t fsize = ftell(f);
+
+    fsetpos(f, &pos);
+    return fsize;
+}
