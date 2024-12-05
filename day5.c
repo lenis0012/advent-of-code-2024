@@ -20,23 +20,10 @@ typedef struct {
 #define LIST_EQ(a, b) a == b
 #include "list.h"
 
-bool correct = true;
 rules_t *rules;
 
 void read_expect(FILE *f, char expected) {
     assert(getc(f) == expected);
-}
-
-int page_compare(int *p1, int *p2) {
-    // Check against rules
-    for (int r = 0; r < rules->size; r++) {
-        Rule rule = rules_get(rules, r);
-        if (rule.after == *p1 && rule.before == *p2) {
-            correct = false;
-            return 1;
-        }
-    }
-    return 0;
 }
 
 void run_day5() {
@@ -61,31 +48,31 @@ void run_day5() {
     // Read all updates
     int result = 0;
     update_t *update = update_new();
-    // while (!feof(f)) {
-    //     update_clear(update);
-    //     fgets(line, LINEBUF_SIZE, f);
-    //     char *cursor = line;
-    //     while (*cursor != '\n' && *cursor != 0) {
-    //         int page = strtod(cursor, &cursor);
-    //         update_add(update, page);
-    //         if (*cursor == ',') cursor++;
-    //     }
-    //
-    //     // Check against rules
-    //     for (int r = 0; r < rules->size; r++) {
-    //         Rule rule = rules_get(rules, r);
-    //         int beforeAt = update_index_of(update, rule.before);
-    //         int afterAt = update_index_of(update, rule.after);
-    //         if (beforeAt != -1 && afterAt != -1 && beforeAt > afterAt) {
-    //             goto next_update;
-    //         }
-    //     }
-    //
-    //     // Sum
-    //     result += update_get(update, update->size / 2);
-    //     next_update:
-    // }
-    // printf("Result 1: %d\n", result);
+    while (!feof(f)) {
+        update_clear(update);
+        fgets(line, LINEBUF_SIZE, f);
+        char *cursor = line;
+        while (*cursor != '\n' && *cursor != 0) {
+            int page = strtod(cursor, &cursor);
+            update_add(update, page);
+            if (*cursor == ',') cursor++;
+        }
+
+        // Check against rules
+        for (int r = 0; r < rules->size; r++) {
+            Rule rule = rules_get(rules, r);
+            int beforeAt = update_index_of(update, rule.before);
+            int afterAt = update_index_of(update, rule.after);
+            if (beforeAt != -1 && afterAt != -1 && beforeAt > afterAt) {
+                goto next_update;
+            }
+        }
+
+        // Sum
+        result += update_get(update, update->size / 2);
+        next_update:
+    }
+    printf("Result 1: %d\n", result);
 
     // Part 2
     result = 0;
@@ -101,20 +88,18 @@ void run_day5() {
         }
 
         // Correct the update
-        correct = true;
-        qsort(update->elements, update->size, sizeof(int), (__compar_fn_t) page_compare);
-        // bool correct = true;
-        // for (int r = 0; r < rules->size; r++) {
-        //     Rule rule = rules_get(rules, r);
-        //     int beforeAt = update_index_of(update, rule.before);
-        //     int afterAt = update_index_of(update, rule.after);
-        //     if (beforeAt != -1 && afterAt != -1 && beforeAt > afterAt) {
-        //         update->elements[afterAt] = rule.before;
-        //         update->elements[beforeAt] = rule.after;
-        //         r = -1;
-        //         correct = false;
-        //     }
-        // }
+        bool correct = true;
+        for (int r = 0; r < rules->size; r++) {
+            Rule rule = rules_get(rules, r);
+            int beforeAt = update_index_of(update, rule.before);
+            int afterAt = update_index_of(update, rule.after);
+            if (beforeAt != -1 && afterAt != -1 && beforeAt > afterAt) {
+                update->elements[afterAt] = rule.before;
+                update->elements[beforeAt] = rule.after;
+                r = -1;
+                correct = false;
+            }
+        }
 
         // Sum
         if (!correct) {
