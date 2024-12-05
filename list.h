@@ -2,8 +2,6 @@
 // Created by lennart on 12/3/24.
 //
 
-#pragma once
-
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -50,15 +48,32 @@ static void LIST_FUNC(fini)(LIST_T *list) {
     free(list->elements);
 }
 
-static LIST_T* LIST_FUNC(destroy)(LIST_T *list) {
+static void LIST_FUNC(destroy)(LIST_T *list) {
     LIST_FUNC(fini)(list);
     free(list);
+}
+
+static void LIST_FUNC(clear)(LIST_T *list) {
+    list->size = 0;
 }
 
 static LIST_ELEMENT LIST_FUNC(get)(LIST_T *list, unsigned int index) {
     assert(list->size > index);
     return list->elements[index];
 }
+
+/**
+* returns -1 when not found
+*/
+#ifdef LIST_EQ
+static int LIST_FUNC(index_of)(LIST_T *list, LIST_ELEMENT target) {
+    for (int i = 0; i < list->size; i++) {
+        if (LIST_EQ(list->elements[i], target)) return i;
+    }
+
+    return -1;
+}
+#endif
 
 static void LIST_FUNC(add)(LIST_T *list, LIST_ELEMENT value) {
     if (list->size >= list->capacity) {
@@ -78,6 +93,7 @@ static void LIST_FUNC(remove_at)(LIST_T *list, int index) {
 #undef LIST_T
 #undef LIST_ELEMENT
 #undef LIST_NAME
+#undef LIST_EQ
 #undef LIST_CONCAT
 #undef LIST_CONCAT_
 

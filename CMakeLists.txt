@@ -8,7 +8,8 @@ add_executable(aoc_2024_c day1.c
         day2.c
         day3.c
         day4.c
-        aoc.h)
+        aoc.h
+        day5.c)
 
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
     target_link_libraries(aoc_2024_c PUBLIC asan)
