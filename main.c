@@ -11,6 +11,7 @@ extern void run_day2();
 extern void run_day3();
 extern void run_day4();
 extern void run_day5();
+extern void run_day6();
 
 int main(int argc, char **argv) {
     int day = strtod(argv[1], nullptr);
@@ -20,6 +21,7 @@ int main(int argc, char **argv) {
     case 3: run_day3(); break;
     case 4: run_day4(); break;
     case 5: run_day5(); break;
+    case 6: run_day6(); break;
         default:
             fprintf(stderr, "Not implemented day %d yet\n", day);
     }
