@@ -3,6 +3,10 @@ project(aoc_2024_c C)
 
 set(CMAKE_C_STANDARD 23)
 
+if(${CMAKE_BUILD_TYPE} MATCHES Debug)
+    link_libraries(asan)
+endif ()
+
 add_executable(aoc_2024_c day1.c
         main.c
         day2.c
@@ -10,8 +14,7 @@ add_executable(aoc_2024_c day1.c
         day4.c
         aoc.h
         day5.c
-        day6.c)
+        day6.c
+        day7.c)
 
-if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    target_link_libraries(aoc_2024_c PUBLIC asan)
-endif ()
+target_link_libraries(aoc_2024_c m)

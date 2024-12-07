@@ -12,6 +12,7 @@ extern void run_day3();
 extern void run_day4();
 extern void run_day5();
 extern void run_day6();
+extern void run_day7();
 
 struct object {
     enum type {
@@ -26,20 +27,6 @@ struct object {
     };
 };
 
-int add(struct object* a, struct object *b) {
-    if (a->type == tnumber && b->type == tnumber) {
-        return a->ivalue + b->ivalue;
-    } else if (a->type == tfloat && b->type == tfloat) {
-        return a->fvalue + b->fvalue;
-    } else if (a->type == tfloat && b->type == tnumber) {
-        return a->fvalue + b->ivalue;
-    }else if (a->type == tnumber && b->type == tfloat) {
-        return a->ivalue + b->fvalue;
-    } else {
-        exit(1);
-    }
-}
-
 int main(int argc, char **argv) {
     int day = strtod(argv[1], nullptr);
     switch (day) {
@@ -49,6 +36,7 @@ int main(int argc, char **argv) {
     case 4: run_day4(); break;
     case 5: run_day5(); break;
     case 6: run_day6(); break;
+    case 7: run_day7(); break;
         default:
             fprintf(stderr, "Not implemented day %d yet\n", day);
     }
