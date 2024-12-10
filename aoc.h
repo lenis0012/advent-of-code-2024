@@ -12,6 +12,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void aoc_begin();
+void aoc_end();
+char aoc_char();
+void aoc_expect(const char *str);
+bool aoc_parse(const char* str);
+void aoc_whitespace();
+int aoc_eat(const char *pattern);
+char *aoc_line(char *buffer, long int length);
+int aoc_int();
+bool aoc_parse_int(int *out);
+
 static char* aoc_read_file(FILE *f) {
     if (f == NULL) {
         fprintf(stderr, "Couln't find input file\n");

@@ -25,7 +25,7 @@ typedef struct {
     uint32_t shift;
 } Operand;
 
-uint64_t eval(const Operand *operands, int noperands) {
+static uint64_t eval(const Operand *operands, int noperands) {
     uint64_t value = operands[0].value;
     for (int i = 1; i < noperands; i++) {
         switch (operands[i].operation) {
@@ -47,7 +47,7 @@ uint64_t eval(const Operand *operands, int noperands) {
     return value;
 }
 
-bool solve(uint64_t test, Operand *operands, int coperand, int noperands) {
+static bool solve(uint64_t test, Operand *operands, int coperand, int noperands) {
     Operand *opr = &operands[coperand];
 
     for (Operation op = OP_ADD; op < OP__Count; op++) {

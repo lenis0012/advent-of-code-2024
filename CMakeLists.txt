@@ -7,14 +7,15 @@ if(${CMAKE_BUILD_TYPE} MATCHES Debug)
     link_libraries(asan)
 endif ()
 
-add_executable(aoc_2024_c day1.c
+file(GLOB week1_src week1/*.c)
+
+include_directories(.)
+
+add_executable(aoc_2024_c
         main.c
-        day2.c
-        day3.c
-        day4.c
-        aoc.h
-        day5.c
-        day6.c
-        day7.c)
+        ${week1_src}
+        week2/day8.c
+        week2/day9.c
+        aoc.c)
 
 target_link_libraries(aoc_2024_c m)
