@@ -15,6 +15,8 @@ extern void run_day6();
 extern void run_day7();
 extern void run_day8();
 extern void run_day9();
+extern void run_day10();
+extern void run_day11();
 
 struct object {
     enum type {
@@ -41,6 +43,8 @@ int main(int argc, char **argv) {
     case 7: run_day7(); break;
     case 8: run_day8(); break;
     case 9: run_day9(); break;
+    case 10: run_day10(); break;
+    case 11: run_day11(); break;
         default:
             fprintf(stderr, "Not implemented day %d yet\n", day);
     }

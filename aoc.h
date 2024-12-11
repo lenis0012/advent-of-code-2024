@@ -19,7 +19,7 @@ void aoc_expect(const char *str);
 bool aoc_parse(const char* str);
 void aoc_whitespace();
 int aoc_eat(const char *pattern);
-char *aoc_line(char *buffer, long int length);
+char *aoc_line(char *buffer, int length);
 int aoc_int();
 bool aoc_parse_int(int *out);
 

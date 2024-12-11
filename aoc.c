@@ -52,23 +52,26 @@ int aoc_eat(const char *pattern) {
     return i;
 }
 
-char *aoc_line(char *buffer, long int length) {
+char *aoc_line(char *buffer, int length) {
     fpos_t mark; fgetpos(f, &mark);
 
     if (buffer == nullptr) {
-        long int start = ftell(f);
-        int c;
+        int start = (int) ftell(f);
+        int c = 0;
         while ((c = fgetc(f)) != EOF && c != '\n') {}
         length = ftell(f) - start + 1; // Reserve for \0
         fsetpos(f, &mark);
 
-        buffer = malloc(length);
+        if (length > 1) buffer = malloc(length);
     }
 
     // Read the line into buffer and remove newline character(s)
-    assert(fgets(buffer, length, f) != nullptr);
-    if (buffer[length - 1] == '\n') buffer[length - 1] = '\0';
-    if (buffer[length - 2] == '\r') buffer[length - 2] = '\0';
+    if(buffer == nullptr || fgets(buffer, length, f) == nullptr) {
+        return nullptr;
+    }
+    int strlength = strlen(buffer);
+    if (buffer[strlength - 1] == '\n') buffer[strlength - 1] = '\0';
+    if (buffer[strlength - 2] == '\r') buffer[strlength - 2] = '\0';
     return buffer;
 }
 

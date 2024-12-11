@@ -83,6 +83,15 @@ static void LIST_FUNC(add)(LIST_T *list, LIST_ELEMENT value) {
     list->elements[list->size++] = value;
 }
 
+static void LIST_FUNC(insert)(LIST_T *list, unsigned int index, LIST_ELEMENT value) {
+    if (list->size >= list->capacity) {
+        list->elements = realloc(list->elements, (list->capacity = list->capacity * 2) * sizeof(LIST_ELEMENT));
+    }
+
+    memmove(&list->elements[index + 1], &list->elements[index], (list->size++ - index) * sizeof(LIST_ELEMENT));
+    list->elements[index] = value;
+}
+
 static void LIST_FUNC(remove_at)(LIST_T *list, int index) {
     assert(list->size > index);
     memmove(&list->elements[index + 1], &list->elements[index], (list->size - index - 1) * sizeof(LIST_ELEMENT));
