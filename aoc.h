@@ -23,6 +23,16 @@ char *aoc_line(char *buffer, int length);
 int aoc_int();
 bool aoc_parse_int(int *out);
 
+// Maps
+typedef struct {
+    char *cells;
+    unsigned int width;
+    unsigned int height;
+} Map;
+
+Map *aoc_map_load();
+char aoc_map(Map *map, int x, int y);
+
 static char* aoc_read_file(FILE *f) {
     if (f == NULL) {
         fprintf(stderr, "Couln't find input file\n");

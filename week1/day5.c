@@ -90,13 +90,13 @@ void run_day5() {
 
         // Correct the update
         bool correct = true;
-        printf("Processing update %d\n", updi++);
+        // printf("Processing update %d\n", updi++);
         for (int r = 0; r < rules->size; r++) {
             Rule rule = rules_get(rules, r);
             int beforeAt = update_index_of(update, rule.before);
             int afterAt = update_index_of(update, rule.after);
             if (beforeAt != -1 && afterAt != -1 && beforeAt > afterAt) {
-                printf("Swapping page %d with %d at index [%d, %d]\n", rule.before, rule.after, beforeAt, afterAt);
+                // printf("Swapping page %d with %d at index [%d, %d]\n", rule.before, rule.after, beforeAt, afterAt);
                 update->elements[afterAt] = rule.before;
                 update->elements[beforeAt] = rule.after;
                 r = -1;
@@ -104,11 +104,11 @@ void run_day5() {
             }
         }
 
-        printf("Final order:");
-        for (int p = 0; p < update->size; p++) {
-            printf(" %d", update->elements[p]);
-        }
-        printf("\n");
+        // printf("Final order:");
+        // for (int p = 0; p < update->size; p++) {
+        //     printf(" %d", update->elements[p]);
+        // }
+        // printf("\n");
 
         // Sum
         if (!correct) {

@@ -18,10 +18,10 @@ typedef struct {
 #define LIST_EQ(a, b) (a.x == b.x && a.y == b.y)
 #include "list.h"
 
-char **map;
-unsigned int width;
-unsigned int height;
-bool distinct = true;
+static char **map;
+static unsigned int width;
+static unsigned int height;
+static bool distinct = true;
 
 static char map_at(int x, int y) {
     if (x < 0 || x >= width || y < 0 || y >= height) return 0;

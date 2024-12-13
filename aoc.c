@@ -7,10 +7,6 @@
 
 static FILE *f = nullptr;
 
-void aoc_begin() {
-    f = fopen("input.txt", "r");
-}
-
 char aoc_char() {
     return (char) fgetc(f);
 }
@@ -124,6 +120,88 @@ bool aoc_parse_int(int *out) {
     return true;
 }
 
+//region Maps
+#define LIST_NAME maps
+#define LIST_ELEMENT Map*
+#include "list.h"
+
+static maps_t *maps;
+
+Map* aoc_map_load() {
+    if (feof(f)) return nullptr;
+
+    Map *map = malloc(sizeof(Map));
+    fpos_t fpos; fgetpos(f, &fpos);
+
+    // Determine width
+    map->width = 0;
+    int c;
+    while ((c = fgetc(f)) >= 32 && c <= 127) {
+        map->width++;
+    }
+
+    // Determine the height
+    map->height = 0;
+    while (c != '\n' && c != EOF) {
+        c = fgetc(f);
+    }
+    size_t width;
+    do {
+        char linebuffer[map->width + 3];
+        map->height++;
+
+        if (feof(f)) break;
+
+        fgets(linebuffer, map->width + 3, f);
+        width = strlen(linebuffer);
+        if (linebuffer[width - 1] == '\n') {
+            width--;
+            if (linebuffer[width - 2] == '\r') {
+                width--;
+            }
+        }
+
+    } while (width == map->width);
+
+    // Read data
+    map->cells = malloc(map->width * map->height);
+    fsetpos(f, &fpos);
+    for (int i = 0; i < map->width * map->height; i++) {
+        int c = fgetc(f);
+        assert(c != EOF);
+        if (c < 32 || c > 127) {
+            i--;
+            continue;
+        }
+
+        map->cells[i] = (char) c;
+    }
+
+    // Read end of line
+    do { c = fgetc(f); } while (c != '\n' && c != EOF);
+
+    return map;
+}
+
+char aoc_map(Map *map, int x, int y) {
+    if (x < 0 || x >= map->width || y < 0 || y >= map->height) {
+        return 0;
+    }
+
+    return map->cells[y * map->width + x];
+}
+//endregion
+
+void aoc_begin() {
+    f = fopen("input.txt", "r");
+    maps = maps_new();
+}
+
 void aoc_end() {
     fclose(f);
+    for (int i = 0; i < maps->size; i++) {
+        free(maps_get(maps, i)->cells);
+        free(maps_get(maps, i));
+    }
+    maps_destroy(maps);
 }
