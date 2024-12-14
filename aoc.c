@@ -11,9 +11,19 @@ char aoc_char() {
     return (char) fgetc(f);
 }
 
+bool aoc_eof() {
+    return feof(f);
+}
+
+void aoc_rewind() {
+    fseek(f, 0, SEEK_SET);
+}
+
 void aoc_expect(const char *str) {
     while (*str != 0) {
-        assert(fgetc(f) == *(str++));
+        int c = fgetc(f);
+        assert(c == *str);
+        str++;
     }
 }
 
@@ -79,6 +89,12 @@ int aoc_int() {
     while (c == ' ') {
         c = fgetc(f);
     }
+
+    bool negative = false;
+    if (c == '-') {
+        negative = true;
+        c = fgetc(f);
+    }
     assert(c >= '0' && c <= '9');
 
     // Process digits
@@ -92,7 +108,7 @@ int aoc_int() {
         result = result * 10 + (c - '0');
     } while ((c = fgetc(f)) != EOF);
 
-    return result;
+    return negative ? result * -1 : result;
 }
 
 bool aoc_parse_int(int *out) {
@@ -103,6 +119,12 @@ bool aoc_parse_int(int *out) {
     do {
         c = fgetc(f);
     } while (c == ' ');;
+
+    bool negative = false;
+    if (c == '-') {
+        negative = true;
+        c = fgetc(f);
+    }
 
     // Validate
     if (c < '0' || c > '9') {
@@ -116,7 +138,7 @@ bool aoc_parse_int(int *out) {
         result = result * 10 + (c - '0');
     } while ((c = fgetc(f)) != EOF && c >= '0' && c <= '9');
 
-    *out = result;
+    *out = negative ? result * -1 : result;
     return true;
 }
 

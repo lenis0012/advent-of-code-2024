@@ -20,6 +20,7 @@ add_executable(aoc_2024_c
         week2/day10.c
         week2/day11.c
         hashmap.h
-        week2/day12.c)
+        week2/day12.c
+        week2/day13.c)
 
 target_link_libraries(aoc_2024_c m)

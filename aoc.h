@@ -12,9 +12,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MIN(a, b) (a < b ? a : b)
+#define MAX(a, b) (a > b ? a : b)
+
 void aoc_begin();
 void aoc_end();
 char aoc_char();
+bool aoc_eof();
+void aoc_rewind();
 void aoc_expect(const char *str);
 bool aoc_parse(const char* str);
 void aoc_whitespace();
