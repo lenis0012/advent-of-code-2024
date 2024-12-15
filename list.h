@@ -6,6 +6,15 @@
 #include <string.h>
 #include <assert.h>
 
+/*
+ * Array-backed list implementation.
+ * Base functions: add(V), get(I), insert(I, V), remove_at(), clear()
+ * define LIST_EQ(a, b) for search extensions: index_of()
+ *
+ * Copies all data when inserting before end of list.
+ * To avoid this, define LIST_UNORDERED
+ */
+
 #ifndef LIST_NAME
 #define LIST_NAME list
 #endif
@@ -92,13 +101,19 @@ static void LIST_FUNC(insert)(LIST_T *list, unsigned int index, LIST_ELEMENT val
     list->elements[index] = value;
 }
 
+#define LIST_UNORDERED
 static void LIST_FUNC(remove_at)(LIST_T *list, int index) {
     assert(list->size > index);
+#ifdef LIST_UNORDERED
+    list->elements[index] = list->elements[--list->size];
+#else
     memmove(&list->elements[index + 1], &list->elements[index], (list->size - index - 1) * sizeof(LIST_ELEMENT));
+#endif
 }
 
 // Undefine all variables
 #undef LIST_FUNC
+#undef LIST_UNORDERED
 #undef LIST_T
 #undef LIST_ELEMENT
 #undef LIST_NAME
