@@ -38,6 +38,7 @@ typedef struct {
 
 Map *aoc_map_load();
 char aoc_map(Map *map, int x, int y);
+void aoc_map_print(Map *map);
 void aoc_map_set(Map *map, int x, int y, char cell);
 
 static char* aoc_read_file(FILE *f) {

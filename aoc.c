@@ -228,6 +228,15 @@ void aoc_map_set(Map *map, int x, int y, char cell) {
 
     map->cells[y * map->width + x] = cell;
 }
+
+void aoc_map_print(Map *map) {
+    for (int y = 0; y < map->height; y++) {
+        for (int x = 0; x < map->width; x++) {
+            printf("%c", aoc_map(map, x, y));
+        }
+        printf("\n");
+    }
+}
 //endregion
 
 void aoc_begin() {

@@ -21,8 +21,8 @@ typedef enum : uint8_t {
 #define LIST_ELEMENT unsigned int
 #include "list.h"
 
-list_t *instructions;
-unsigned long A, B, C;
+static list_t *instructions;
+static unsigned long A, B, C;
 
 static unsigned long combo(unsigned int combo) {
     if (combo <= 3) {
