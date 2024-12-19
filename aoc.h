@@ -19,6 +19,7 @@ void aoc_begin();
 void aoc_end();
 char aoc_char();
 bool aoc_eof();
+int aoc_scan(const char *format, ...);
 void aoc_rewind();
 void aoc_expect(const char *str);
 bool aoc_parse(const char* str);
@@ -37,6 +38,7 @@ typedef struct {
 
 Map *aoc_map_load();
 char aoc_map(Map *map, int x, int y);
+void aoc_map_set(Map *map, int x, int y, char cell);
 
 static char* aoc_read_file(FILE *f) {
     if (f == NULL) {

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "aoc.h"
 
@@ -13,6 +14,13 @@ char aoc_char() {
 
 bool aoc_eof() {
     return feof(f);
+}
+
+int aoc_scan(const char *format, ...) {
+    va_list vargs;
+    va_start(vargs);
+    vfscanf(f, format, vargs);
+    va_end(vargs);
 }
 
 void aoc_rewind() {
@@ -211,6 +219,14 @@ char aoc_map(Map *map, int x, int y) {
     }
 
     return map->cells[y * map->width + x];
+}
+
+void aoc_map_set(Map *map, int x, int y, char cell) {
+    if (x < 0 || x >= map->width || y < 0 || y >= map->height) {
+        return;
+    }
+
+    map->cells[y * map->width + x] = cell;
 }
 //endregion
 

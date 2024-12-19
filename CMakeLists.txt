@@ -4,7 +4,7 @@ project(aoc_2024_c C)
 set(CMAKE_C_STANDARD 23)
 
 if(${CMAKE_BUILD_TYPE} MATCHES Debug)
-    link_libraries(asan)
+#    link_libraries(asan)
 endif ()
 
 file(GLOB week1_src week1/*.c)
@@ -22,6 +22,9 @@ add_executable(aoc_2024_c
         hashmap.h
         week2/day12.c
         week2/day13.c
-        week2/day14.c)
+        week2/day14.c
+        week3/day15.c
+        week3/day16.c
+        week3/day17.c)
 
 target_link_libraries(aoc_2024_c m)
