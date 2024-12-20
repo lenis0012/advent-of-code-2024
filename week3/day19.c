@@ -10,6 +10,10 @@
 
 #define LIST_NAME towels
 #define LIST_ELEMENT char*
+#define LIST_UNORDERED
+#define LIST_EQ(a, b) (a == b)
+#include <stdint.h>
+
 #include "list.h"
 
 towels_t* towels_az['z' - 'a'] = {};
@@ -28,30 +32,47 @@ static bool parse_towel(char *towel) {
     return true;
 }
 
-static bool solve(char *layout) {
-    printf("%s\n", layout);
-    char c = *layout;
-    if (c == '\0') {
-        return true;
-    }
-
-    towels_t *towels = towels_az[c - 'a'];
-    if (towels == nullptr) {
-        return false;
-    }
-
+static char* get_lowest(towels_t *towels) {
+    char *lowest = (char*) SIZE_MAX;
+    int lowest_idx = 0;
     for (int i = 0; i < towels->size; i++) {
         char *towel = towels_get(towels, i);
-        unsigned int stripes = strlen(towel);
+        if (towel < lowest) {
+            lowest = towel;
+            lowest_idx = i;
+        }
+    }
 
-        if (strncmp(towel, layout, stripes) == 0) {
-            if (stripes == strlen(layout) || solve(layout + stripes)) {
-                return true;
+    towels_remove_at(towels, lowest_idx);
+    return lowest;
+}
+
+static bool solve(char *layout) {
+    towels_t *open = towels_new();
+    towels_add(open, layout);
+
+    bool success = false;
+    while (open->size > 0) {
+        char *cursor = get_lowest(open);
+        if (*cursor == '\0') {
+            success = true;
+            break;
+        }
+
+        towels_t *towels = towels_az[*cursor - 'a'];
+        if (towels == nullptr) continue;
+        for (int i = 0; i < towels->size; i++) {
+            char *towel = towels->elements[i];
+
+            unsigned int tlen = strlen(towel);
+            if (strncmp(towel, cursor, tlen) == 0 && towels_index_of(open, cursor + tlen) == -1) {
+                towels_add(open, cursor + tlen);
             }
         }
     }
 
-    return false;
+    towels_destroy(open);
+    return success;
 }
 
 void run_day19() {
@@ -70,11 +91,9 @@ void run_day19() {
     int result = 0;
     while (!aoc_eof()) {
         char *layout = aoc_line(towel, BUFFER_SIZE);
-        printf("Solving towels for: %s\n", layout);
         if (strlen(layout) == 0) continue;
 
         if (solve(layout)) {
-            printf("Solved\n");
             result++;
         }
     }
