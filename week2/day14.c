@@ -3,6 +3,7 @@
 //
 
 #include <aoc.h>
+#include <ncurses.h>
 
 typedef struct {
     int pos_x, pos_y;
@@ -24,7 +25,8 @@ typedef struct {
 #define MAP_CX (MAP_WIDTH / 2)
 #define MAP_CY (MAP_HEIGHT / 2)
 
-quadrant_t quadrants[4];
+static quadrant_t quadrants[4];
+static int grid[MAP_WIDTH][MAP_HEIGHT] = {};
 
 static quadrant_t* get_quadrant(const Robot *robot) {
     if (robot->pos_x < MAP_CX && robot->pos_y < MAP_CY) {
@@ -73,6 +75,7 @@ void run_day14() {
     }
     for (int r = 0; r < robots->size; r++) {
         Robot *robot = &robots->elements[r];
+        grid[robot->pos_x][robot->pos_y] += 1;
         quadrant_t *quadrant = get_quadrant(robot);
         if (quadrant != nullptr) {
             quadrant_add(quadrant, robot);
@@ -80,13 +83,59 @@ void run_day14() {
     }
 
     // Iterate
-    for (int i = 0; i < 100; i++) {
+    initscr();			/* Start curses mode 		  */
+    cbreak();
+    noecho();
+    keypad(stdscr, TRUE);
+
+    int delay = 200, i = 0;
+    while (!isendwin()) {
+        mvprintw(0, 0, "Iteration: %d Delay: %d\n", i, delay);
+
+        for (int y = 0; y < MAP_HEIGHT; y++) {
+            for (int x = 0; x < MAP_WIDTH; x++) {
+                printw(grid[x][y] == 0 ? "." : "#");
+            }
+            printw("\n");
+        }
+
+        delay_output(delay);
+        refresh();			/* Print it on to the real screen */
+        int key = getch();			/* Wait for user input */
+        flushinp(); // Flush backlog
+
+        bool forwards;
+        if (key == KEY_RIGHT) {
+            forwards = true;
+            i++;
+        } else if (key == KEY_LEFT) {
+            forwards = false;
+            i--;
+        } else if (key == KEY_UP) {
+            delay *= 2;
+            continue;
+        } else if (key == KEY_DOWN) {
+            delay /= 2;
+            continue;
+        } else if (key == 'q') {
+            endwin();
+            break;
+        }
+
         for (int r = 0; r < robots->size; r++) {
             Robot *robot = &robots->elements[r];
             quadrant_t *previous_quadrant = get_quadrant(robot);
-            robot->pos_x = wrap_pos_x(robot->pos_x + robot->vel_x);
-            robot->pos_y = wrap_pos_y(robot->pos_y + robot->vel_y);
+            grid[robot->pos_x][robot->pos_y] -= 1;
+
+            if (forwards) {
+                robot->pos_x = wrap_pos_x(robot->pos_x + robot->vel_x);
+                robot->pos_y = wrap_pos_y(robot->pos_y + robot->vel_y);
+            } else {
+                robot->pos_x = wrap_pos_x(robot->pos_x - robot->vel_x);
+                robot->pos_y = wrap_pos_y(robot->pos_y - robot->vel_y);
+            }
             quadrant_t *new_quadrant = get_quadrant(robot);
+            grid[robot->pos_x][robot->pos_y] += 1;
 
             if (previous_quadrant != new_quadrant) {
                 if (previous_quadrant != nullptr) {
@@ -107,13 +156,6 @@ void run_day14() {
     }
     printf("Result: %u\n", result);
 
-
-    for (int y = 0; y < MAP_HEIGHT; y++) {
-        for (int x = 0; x < MAP_WIDTH; x++) {
-            printf(".");
-        }
-        printf("\n");
-    }
 
     robots_destroy(robots);
     for (int i = 0; i < 4; i++) quadrant_fini(&quadrants[i]);

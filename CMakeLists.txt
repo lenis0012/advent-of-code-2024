@@ -35,4 +35,4 @@ add_executable(aoc_2024_c
         week4/day25.c
 )
 
-target_link_libraries(aoc_2024_c m)
+target_link_libraries(aoc_2024_c m ncurses)

@@ -30,19 +30,6 @@ extern void run_day23();
 extern void run_day24();
 extern void run_day25();
 
-struct object {
-    enum type {
-        tnumber,
-        tfloat,
-        tstring
-    } type;
-    union {
-        float fvalue;
-        int ivalue;
-        char* strvalue;
-    };
-};
-
 int main(int argc, char **argv) {
     int day = strtod(argv[1], nullptr);
     switch (day) {
