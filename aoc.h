@@ -18,6 +18,7 @@
 void aoc_begin();
 void aoc_end();
 char aoc_char();
+void aoc_unget(char c);
 bool aoc_eof();
 int aoc_scan(const char *format, ...);
 void aoc_rewind();

@@ -3,6 +3,7 @@
 //
 
 #include <stdlib.h>
+#include <assert.h>
 #include <stdbit.h>
 
 #ifndef MAP_NAME
@@ -21,7 +22,7 @@
 #define MAP_HASH(v) v
 #endif
 
-#ifndef MAP_EQ(a, b)
+#ifndef MAP_EQ
 #define MAP_EQ(a, b) (a == b)
 #endif
 
@@ -71,13 +72,14 @@ MAP_FUNC(put, void)(MAP_T *map, MAP_K key, MAP_V value) {
                 MAP_NT *onodes = map->nodes;
                 unsigned int ocapacity = map->capacity;
                 map->capacity *= 2;
-                map->nodes = malloc(map->capacity * sizeof(MAP_NT));
+                map->nodes = calloc(map->capacity, sizeof(MAP_NT));
                 for (int i  = 0; i < ocapacity; i++) {
                     if (!onodes[i].set) continue;
                     MAP_CONCAT(MAP_NAME, put)(map, onodes[i].key, onodes[i].value);
                 }
                 free(onodes);
-                return MAP_CONCAT(MAP_NAME, put)(map, key, value);
+                MAP_CONCAT(MAP_NAME, put)(map, key, value);
+                return;
             }
             map->size++;
             node->key = key;
@@ -107,6 +109,26 @@ MAP_FUNC(get, MAP_V)(MAP_T *map, MAP_K key) {
 
         pos = (++pos) % map->capacity;
     }
+}
+
+MAP_FUNC(next, MAP_NT*)(MAP_T *map, MAP_NT *prev) {
+    if (prev == nullptr) {
+        for (int i = 0; i < map->capacity; i++) {
+            MAP_NT node = map->nodes[i];
+            if (node.set) {
+                return &map->nodes[i];
+            }
+        }
+        return nullptr;
+    }
+
+    while (++prev < &map->nodes[map->capacity]) {
+        if (prev->set) {
+            return prev;
+        }
+    }
+
+    return nullptr;
 }
 
 #undef MAP_NAME

@@ -29,6 +29,10 @@ add_executable(aoc_2024_c
         week3/day18.c
         week3/day19.c
         week3/day20.c
+        week4/day23.c
+        week4/day24.c
+        program.c
+        week4/day25.c
 )
 
 target_link_libraries(aoc_2024_c m)

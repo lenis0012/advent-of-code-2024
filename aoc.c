@@ -12,6 +12,10 @@ char aoc_char() {
     return (char) fgetc(f);
 }
 
+void aoc_unget(char c) {
+    ungetc(c, f);
+}
+
 bool aoc_eof() {
     return feof(f);
 }
