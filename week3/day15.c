@@ -25,7 +25,7 @@ static void find_robot() {
     }
 }
 
-static bool robot_push(Position pos, char direction) {
+static bool robot_push(Position pos, char direction, bool write) {
     Position next = pos;
     switch (direction) {
     case '^': next.y--; break;
@@ -38,18 +38,22 @@ static bool robot_push(Position pos, char direction) {
     if (obstacle == '#') {
         return false; // Failed
     }
-    if (obstacle == 'O'&& !robot_push(next, direction)) {
+    if (obstacle == 'O'&& !robot_push(next, direction, write)) {
         return false; // Failed downstream
     }
     if (direction == '^' || direction == 'v') {
-        if (obstacle == '[' && (!robot_push(next, direction) || !robot_push((Position) { next.x + 1, next.y }, direction))) {
+        if (obstacle == '[' && (!robot_push(next, direction, write) || !robot_push((Position) { next.x + 1, next.y }, direction, write))) {
             return false;
         }
-        if (obstacle == ']' && (!robot_push(next, direction) || !robot_push((Position) { next.x - 1, next.y }, direction))) {
+        if (obstacle == ']' && (!robot_push(next, direction, write) || !robot_push((Position) { next.x - 1, next.y }, direction, write))) {
             return false;
         }
-    } else if ((obstacle == '[' || obstacle == ']') && !robot_push(next, direction)) {
+    } else if ((obstacle == '[' || obstacle == ']') && !robot_push(next, direction, write)) {
         return false;
+    }
+
+    if (!write) {
+        return true;
     }
 
     char origin = aoc_map(map, pos.x, pos.y);
@@ -70,7 +74,7 @@ static void solve_part1() {
         }
 
         assert(c == '^' || c == '>' || c == 'v' || c == '<');
-        robot_push(robot, c);
+        robot_push(robot, c, true);
     }
 
     int result = 0;
@@ -124,7 +128,9 @@ static void solve_part2() {
         }
 
         assert(c == '^' || c == '>' || c == 'v' || c == '<');
-        robot_push(robot, c);
+        if (robot_push(robot, c, false)) {
+            robot_push(robot, c, true);
+        }
     }
 
     int result = 0;
